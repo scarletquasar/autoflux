@@ -1,0 +1,25 @@
+{
+  "name": "autoflux",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "Victoria Rose <victoriarosevcruz@gmail.com>",
+  "scripts": {
+    "build": "npm run _babel_from_source && npm run _webpack_from_babel",
+    "_webpack_from_babel": "webpack ./babel/index.js --config ./webpack.config.js",
+    "_babel_from_source": "babel --extensions .js,.ts ./src/ --out-dir ./babel --quiet"
+  },
+  "bin": {
+    "autoflux": "dist/main.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "latest",
+    "@babel/core": "latest",
+    "@babel/preset-env": "latest",
+    "@babel/preset-typescript": "latest",
+    "@types/node": "^18.15.0",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "webpack-cli": "latest"
+  }
+}
