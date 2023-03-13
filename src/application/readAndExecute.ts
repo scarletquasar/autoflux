@@ -15,8 +15,9 @@ function readAndExecute (identifier: string, args: string[]) {
         if (program.help.tipsEnabled) {
             console.log("Commands:\n");
             for(const command of program.commands) {
-                let commandText = 
-                    `Name: ${command.entryPoint} | Type: ${command.type} | Example Usage: ${command.exampleUsage}`;
+                let commandText = `Name: ${command.entryPoint}`
+                    + ` | Type: ${command.type}`
+                    + ` | Example Usage: ${command.exampleUsage}`;
 
                 console.log(commandText);
             }
