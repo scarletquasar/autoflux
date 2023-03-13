@@ -19,7 +19,6 @@
     "@babel/preset-env": "latest",
     "@babel/preset-typescript": "latest",
     "@types/node": "^18.15.0",
-    "node-polyfill-webpack-plugin": "^2.0.1",
     "webpack-cli": "latest"
   }
 }
