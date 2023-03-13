@@ -7,7 +7,9 @@ function readAndExecute (identifier: string, args: string[]) {
     const programRaw = readFileSync(programPath).toString();
     const program = JSON.parse(programRaw) as Program;
 
-    if (args.length === 1 && args[0] == "--help") {
+    const showHelpCondition = args.length === 0 || (args.length === 1 && args[0] == "--help");
+    
+    if (showHelpCondition) {
         if (program.help.textEnabled) {
             console.log(program.help.text);
         }

@@ -1,7 +1,7 @@
 module.exports = {
     mode: "production",
     optimization: {
-      minimize: false
+      minimize: true
     },
     target: 'node'
 }
