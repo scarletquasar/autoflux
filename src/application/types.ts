@@ -1,11 +1,11 @@
 interface Command {
     entryPoint: string;
-    script: string;
+    instructions: string[];
     type: CommandType;
     exampleUsage: string;
 }
 
-type CommandType = "shell" | "file";
+type CommandType = "shell" | "ps1-file" | "sh-file" | "js-node-file";
 
 interface Help {
     tipsEnabled: boolean;
@@ -19,4 +19,4 @@ interface Program {
     title: string;
 }
 
-export { Command, Help, Program }
+export { Command, Help, Program, CommandType }

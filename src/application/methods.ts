@@ -1,6 +1,7 @@
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
-import { Program } from "./types";
+import { SpawnOptionsWithoutStdio, spawnSync } from "child_process";
+import { CommandType, Program } from "./types";
 
 function readAndExecute (identifier: string, args: string[]) {
     const programPath = join("./", identifier, "program.json");
@@ -36,13 +37,48 @@ function readAndExecute (identifier: string, args: string[]) {
     }
 
     const inputCommand = args[0];
-
-    if (program.commands.find(command => command.entryPoint === inputCommand)) {
-
+    const command = program.commands.find(command => command.entryPoint === inputCommand);
+    if (command) {
+        handleExecution(command.instructions, args.slice(1), command.type);
     }
     else {
         console.error("The specified command doesn't exist.");
         process.exit();
+    }
+}
+
+function handleExecution(instructions: string[], args: string[], type: CommandType) {
+    const childSpawnOptions: SpawnOptionsWithoutStdio = { stdio: "inherit" } as unknown;
+
+    switch(type) {
+        case "shell":
+            spawnSync(
+                instructions[0], 
+                instructions.slice(1).concat(args), 
+                childSpawnOptions
+            );
+            break;
+        case "ps1-file":
+            spawnSync(
+                "pwsh", 
+                instructions.concat(args), 
+                childSpawnOptions
+            );
+            break;
+        case "sh-file":
+            spawnSync(
+                "sh", 
+                instructions.concat(args), 
+                childSpawnOptions
+            );
+            break;
+        case "js-node-file":
+            spawnSync(
+                "node", 
+                ["-e"].concat(instructions).concat(args), 
+                childSpawnOptions
+            );
+            break;
     }
 }
 

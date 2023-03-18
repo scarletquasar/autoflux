@@ -1,4 +1,4 @@
-import { readAndExecute } from "./application/readAndExecute";
+import { readAndExecute } from "./application/methods";
 
 const args = process.argv.slice(2);
 
