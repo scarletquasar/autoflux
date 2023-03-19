@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
-import { SpawnOptionsWithoutStdio, spawnSync } from "child_process";
-import { CommandType, Program } from "./types";
+import { SpawnOptionsWithoutStdio, spawn, ChildProcessWithoutNullStreams } from "child_process";
+import { Command, Program } from "./types";
 
 function readAndExecute (identifier: string, args: string[]) {
     const programPath = join("./", identifier, "program.json");
@@ -39,7 +39,7 @@ function readAndExecute (identifier: string, args: string[]) {
     const inputCommand = args[0];
     const command = program.commands.find(command => command.entryPoint === inputCommand);
     if (command) {
-        handleExecution(command.instructions, args.slice(1), command.type);
+        handleExecution(command, args.slice(1));
     }
     else {
         console.error("The specified command doesn't exist.");
@@ -47,39 +47,42 @@ function readAndExecute (identifier: string, args: string[]) {
     }
 }
 
-function handleExecution(instructions: string[], args: string[], type: CommandType) {
+function handleExecution(command: Command, args: string[]) {
     const childSpawnOptions: SpawnOptionsWithoutStdio = { stdio: "inherit" } as unknown;
+    let eventEmitter: ChildProcessWithoutNullStreams;
 
-    switch(type) {
+    switch(command.type) {
         case "shell":
-            spawnSync(
-                instructions[0], 
-                instructions.slice(1).concat(args), 
+            eventEmitter = spawn(
+                command.instructions[0], 
+                command.instructions.slice(1).concat(args), 
                 childSpawnOptions
             );
             break;
         case "ps1-file":
-            spawnSync(
+            eventEmitter = spawn(
                 "pwsh", 
-                instructions.concat(args), 
+                command.instructions.concat(args), 
                 childSpawnOptions
             );
             break;
         case "sh-file":
-            spawnSync(
+            eventEmitter = spawn(
                 "sh", 
-                instructions.concat(args), 
+                command.instructions.concat(args), 
                 childSpawnOptions
             );
             break;
         case "js-node-file":
-            spawnSync(
+            eventEmitter = spawn(
                 "node", 
-                ["-e"].concat(instructions).concat(args), 
+                ["-e"].concat(command.instructions).concat(args), 
                 childSpawnOptions
             );
             break;
     }
+
+    eventEmitter.on("data", console.log);
 }
 
 export { readAndExecute }
