@@ -16,4 +16,9 @@ In **autoflux**, commands are folders containing an index file, called `program.
 
 - **Reliability:** POSIX-compliant command line tools ready to use and they cover all your needed scripts and have options to provide proper documentation to it (that comes embedded in runtime)
 - **Portability:** autoflux commands can be easily shared with the respective associated folders, this can be used for personal automation, open source projects and even be scaled to company projects where you need to do things like set up development environments for newcomers with some needed scripts
-- **Cross-platform:** Since autoflux is made using TypeScript on top of Node.js, it can be used in any supported platform (like Unix, FreeBSD, Windows, macOS and with some extra effort even in iOS or Android)
+- **Cross-platform:** Since autoflux is made using TypeScript on top of Node.js, it can be used in any supported platform (like Unix, FreeBSD, Windows, macOS...)
+
+## Todo
+
+- [x] Folder command feature: Create commands using indexed folders that contains all the logic and resources;
+- [] Command-save: save a command path globally and call it directly with the alias

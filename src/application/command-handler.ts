@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
-import { SpawnOptionsWithoutStdio, spawn, ChildProcessWithoutNullStreams } from "child_process";
+import { SpawnOptionsWithoutStdio, spawn } from "child_process";
 import { Command, Program } from "./types";
 
 class CommandHandler {
@@ -40,7 +40,7 @@ class CommandHandler {
         const inputCommand = args[0];
         const command = program.commands.find(command => command.entryPoint === inputCommand);
         if (command) {
-            this.handleExecution(command, args.slice(1));
+            this.triggerCommand(command, args.slice(1));
         }
         else {
             console.error("The specified command doesn't exist.");
@@ -48,41 +48,34 @@ class CommandHandler {
         }
     }
 
-    private static handleExecution(command: Command, args: string[]) {
+    private static triggerCommand(command: Command, args: string[]) {
         const childSpawnOptions: SpawnOptionsWithoutStdio = { stdio: "inherit" } as unknown;
-        let eventEmitter: ChildProcessWithoutNullStreams;
+  
+        const typeActions = {
+          "shell": () => {
+            return spawn(
+                command.instructions[0], 
+                command.instructions.slice(1).concat(args), 
+                childSpawnOptions
+            );
+          },
+          "ps1-file": () => {
+            return spawn(
+                "pwsh", 
+                command.instructions.concat(args), 
+                childSpawnOptions
+            );
+          },
+          "js-node-file": () => {
+            return spawn(
+                "node", 
+                ["-e"].concat(command.instructions).concat(args), 
+                childSpawnOptions
+            );
+          }
+        };
     
-        switch(command.type) {
-            case "shell":
-                eventEmitter = spawn(
-                    command.instructions[0], 
-                    command.instructions.slice(1).concat(args), 
-                    childSpawnOptions
-                );
-                break;
-            case "ps1-file":
-                eventEmitter = spawn(
-                    "pwsh", 
-                    command.instructions.concat(args), 
-                    childSpawnOptions
-                );
-                break;
-            case "sh-file":
-                eventEmitter = spawn(
-                    "sh", 
-                    command.instructions.concat(args), 
-                    childSpawnOptions
-                );
-                break;
-            case "js-node-file":
-                eventEmitter = spawn(
-                    "node", 
-                    ["-e"].concat(command.instructions).concat(args), 
-                    childSpawnOptions
-                );
-                break;
-        }
-    
+        const eventEmitter = typeActions[command.type]();
         eventEmitter.on("data", console.log);
     }
 }
