@@ -3,7 +3,7 @@
 **autoflux** is a cross-platform tool for assembling scripts, commands and automation stuff into a documentable and maintainable fully posix compliant command line interface.
 
 > **Warning**
-> Autoflux is still in development
+> Autoflux is still is a deprecated project and may not be used for production purposes.
 
 ## How does it work?
 
